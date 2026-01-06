@@ -1,3 +1,29 @@
+# ================================
+# ENVIRONMENT DETECTION
+# ================================
+
+function Get-ExecutionEnvironment {
+    $isWinPE = $false
+
+    try {
+        if (Test-Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\WinPE") {
+            $isWinPE = $true
+        }
+    } catch {}
+
+    if ($env:SystemDrive -eq 'X:') {
+        $isWinPE = $true
+    }
+
+    return @{
+        IsWinPE = $isWinPE
+        IsFullOS = -not $isWinPE
+        SystemDrive = $env:SystemDrive
+    }
+}
+
+$EnvInfo = Get-ExecutionEnvironment
+
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName Microsoft.VisualBasic
 
